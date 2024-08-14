@@ -8,7 +8,7 @@ export const Register = () => {
             var dataObj={
             "data":data
         }
-           const res= await fetch('http://localhost:2020/std/register',{
+           const res= await fetch('https://react-a1-server.vercel.app/std/register',{
             method:'post',
             headers:{
                 "content-type":"application/json"
