@@ -21,6 +21,7 @@ export const Login = () => {
      if(res?.data?.length > 0){
       if(typeof window !== "undefined"){
       sessionStorage.user = res?.data?.[0]?.uid
+      sessionStorage.token = res?.data?.[0]?.token
       }
       dispatch({ type: "LOGIN", payload: { isLoggedIn: true, user: res?.data?.[0]?.uid } })
 

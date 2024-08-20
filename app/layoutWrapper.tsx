@@ -4,7 +4,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Login } from "@/Login";
 import{appstore }from '../redux/appstore'
-import { Provider, useSelector } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { UseDispatch } from "react-redux";
+import React,{ useEffect } from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 
@@ -14,15 +16,37 @@ export default function LayoutWrapper({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const dispatch=useDispatch()
+  useEffect(()=>{
+    if(typeof window !== 'undefined' && sessionStorage?.user ){
+      dispatch({ type: "LOGIN", payload: { isLoggedIn: true, user: sessionStorage?.user} })
+    }
+  })
   var isloggedIn=useSelector((state:any)=>{
     return state?.appReducer?.isLoggedIn
   })
+  var user=useSelector((state:any)=>{
+    return state?.appReducer?.user
+  })
+  const handeleLogout=()=>{
+    const bool=confirm('are you sure to logout')
+    if(bool){
+      sessionStorage.clear()
+      dispatch({ type: "LOGIN", payload: { isLoggedIn: false, user: ""}})
+    }
+  
+  }
   return (
     <html lang="en">
       <body className={inter.className}>
         <Provider store={appstore}>
           
-         {isloggedIn ?children:<Login/>}
+         {isloggedIn ?<div>
+          <h3>{user}</h3>
+          <div><button onClick={handeleLogout}>Logout</button></div>
+          {children}
+          </div>
+         :<Login/>}
         </Provider>
         </body>
     </html>
