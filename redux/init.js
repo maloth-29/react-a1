@@ -1,5 +1,6 @@
  export const init={
     isLoggedIn:false,
-    user:''
+    user:'',
+    isShowModal:false
 
 }
