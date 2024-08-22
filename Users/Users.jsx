@@ -1,7 +1,8 @@
 "use client"
-import { Ajax } from '@/servises/Ajax'
+
 import React, { useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch,useSelector } from 'react-redux'
+import { Ajax } from '@/servises/Ajax'
 
 const Pagination=({currPage,setCurrPage, totalPages })=>{
     const inputRef=React.useRef()
@@ -26,7 +27,8 @@ const Pagination=({currPage,setCurrPage, totalPages })=>{
  }
 
 export const Users = () => {
-    const[students,setStudents]=useState([])
+   const students=useSelector((state)=>state?.appReducer?.students)
+   
     const [currData,setCurrData]=useState([])
     const perPage=5;
     const [currPage,setCurrPage]=React.useState(1)
@@ -36,24 +38,39 @@ export const Users = () => {
        const start=end-perPage;
        setCurrData(students.slice(start,end))
     },[currPage,students])
-    const getUsers = async()=>{
-        try{
-        const res =await Ajax.sendGetReq('std/get-std')
-        setStudents(res?.data);
-        }catch(ex){
-            setStudents([])
-
-        }
-    }
+   
     useEffect(()=>{
-        getUsers();
+        dispatch({type:"GET_STUDENTS"})
     },[])
     const handleEdit =(row)=>{
-      sessionStorage.getItem("row",JSON.stringify(row))
-      dispatch({type:'MODAL',payload:true})
+     
+    
+      dispatch({ type: "MODAL", payload: { isShowModal: true, student: row } })
+      
+      
     }
+    const handleDelete=async(row)=>{
+      const bool = confirm("R u sure...")
+      if (bool){
+      try {
+         dispatch({ type: "LOADER", payload: true })
+         const res = await Ajax.sendDeleteReq(`std/delete-std/${row?._id}`)
+         const { acknowledged, deletedCount } = res?.data;
+         if (acknowledged && deletedCount) {
+             dispatch({ type: "GET_STUDENTS" })
+             alert('success')
+         } else {
+             alert('fail')
+         }
+     } catch (ex) {
+
+     } finally {
+         dispatch({ type: "LOADER", payload: false })
+     }
+    }
+   }
   return (
-    <div>U<table border='2px' className="table table-bordered">
+    <div><table border='2px' className="table table-bordered">
     <thead>
        <tr>
           <th>ID</th>
@@ -74,7 +91,7 @@ export const Users = () => {
                    <td>{rno}</td>
                    <td>{loc}</td>
                    <td><button onClick={()=> handleEdit(obj)}>Edit</button></td>
-                   <td><button>Delete</button></td>
+                   <td><button onClick={() => handleDelete(obj)}>Delete</button></td>
                 </tr>
           })
        }

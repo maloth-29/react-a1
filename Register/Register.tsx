@@ -1,25 +1,32 @@
 "use client"
 import { Ajax } from '@/servises/Ajax'
 import React, { useState } from 'react'
+import { useDispatch, UseDispatch } from 'react-redux'
 
 export const Register = () => {
+    const dispatch=useDispatch()
     const [data,setData]=useState({})
     const fnRegister=async()=>{
         try{
             var dataObj={
             "data":data
         }
+        dispatch({ type: "LOADER", payload: true })
            const res= await Ajax.sendPostReq('std/register',dataObj)
          
            const { acknowledged, insertedId } = res?.data;
             if (acknowledged && insertedId) {
+                dispatch({type:"GET_STUDENTS"})
                 alert('success')
             } else {
                 alert('fail')
             }
            console.log(res?.data)
-        }catch(exe){
+        }catch(exe:any){
             console.error(exe)
+            alert(exe.message)
+        }finally{
+            dispatch({ type: "LOADER", payload: false})
         }
     }
     const  handlechange=(eve:any)=>{

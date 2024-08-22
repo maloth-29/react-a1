@@ -6,12 +6,23 @@ export const appReducer=(state=init,action)=>{
             ...state,
             ...action.payload
         }
+        case'STUDENTS':
+        return{
+            ...state,
+            students:action.payload
+
+        }
         case'MODAL':
         return{
             ...state,
-            isShowModal:action.payload
+            ...action.payload
 
         }
+        case 'LOADER':
+            return {
+                ...state,
+                isShowLoader: action.payload
+            }
         default:
             return state;
 }

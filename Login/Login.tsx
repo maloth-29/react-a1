@@ -15,7 +15,9 @@ export const Login = () => {
 
   }
   const handleClick= async ()=>{
+
      try{
+    dispatch({ type: "LOADER", payload: true })
      const res= await Ajax.sendPostReq('std/login',data)
      console.log(res)
      if(res?.data?.length > 0){
@@ -30,6 +32,8 @@ export const Login = () => {
      }
      }catch(ex){
 
+     }finally{
+      dispatch({ type: "LOADER", payload: false})
      }
 
   }

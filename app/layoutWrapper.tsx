@@ -7,6 +7,8 @@ import{appstore }from '../redux/appstore'
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { UseDispatch } from "react-redux";
 import React,{ useEffect } from "react";
+import { Modal } from "../Modal";
+import { Loader } from "@/Loader";
 const inter = Inter({ subsets: ["latin"] });
 
 
@@ -28,6 +30,12 @@ export default function LayoutWrapper({
   var user=useSelector((state:any)=>{
     return state?.appReducer?.user
   })
+  var isShowModal=useSelector((state:any)=>{
+    return state?.appReducer?.isShowModal
+  })
+  var isShowLoader=useSelector((state:any)=>{
+    return state?.appReducer?.isShowLoader
+  })
   const handeleLogout=()=>{
     const bool=confirm('are you sure to logout')
     if(bool){
@@ -45,8 +53,9 @@ export default function LayoutWrapper({
           <h3>{user}</h3>
           <div><button onClick={handeleLogout}>Logout</button></div>
           {children}
-          </div>
-         :<Login/>}
+          </div>:<Login/>}
+          {isShowModal && <Modal/>}
+       {  isShowModal &&  <Loader/>}
         </Provider>
         </body>
     </html>
